@@ -39,8 +39,9 @@ using namespace std;
  * @brief Calcula el cambio óptimo utilizando programación dinámica.
  * @param denominaciones Lista de denominaciones de monedas.
  * @param cambio Monto de cambio a devolver.
+ * @return Vector con el número de monedas de cada denominación.
  */
-void cambio_dinamico(const vector<int>& denominaciones, int cambio) {
+vector<int> cambio_dinamico(const vector<int>& denominaciones, int cambio) {
     int n = denominaciones.size();
     vector<int> dp(cambio + 1, INT_MAX);
     vector<int> seleccion(cambio + 1, -1);
@@ -57,32 +58,27 @@ void cambio_dinamico(const vector<int>& denominaciones, int cambio) {
 
     vector<int> resultado(n, 0);
     if (dp[cambio] == INT_MAX) {
-        for (int i = 0; i < n; i++) {
-            cout << "0" << endl;
-        }
-        return;
+        return resultado; // vector con puros ceros si no se puede dar cambio
     }
 
     int tempCambio = cambio;
     while (tempCambio > 0) {
         int index = seleccion[tempCambio];
-        if (index == -1)
-            break;
+        if (index == -1) break;
         resultado[index]++;
         tempCambio -= denominaciones[index];
     }
 
-    for (int i = 0; i < n; i++) {
-        cout << resultado[i] << endl;
-    }
+    return resultado;
 }
 
 /**
  * @brief Calcula el cambio utilizando un algoritmo avaro.
  * @param denominaciones Lista de denominaciones de monedas.
  * @param cambio Monto de cambio a devolver.
+ * @return Vector con el número de monedas de cada denominación.
  */
-void cambio_avaro(const vector<int>& denominaciones, int cambio) {
+vector<int> cambio_avaro(const vector<int>& denominaciones, int cambio) {
     int n = denominaciones.size();
     vector<int> resultado(n, 0);
 
@@ -91,9 +87,7 @@ void cambio_avaro(const vector<int>& denominaciones, int cambio) {
         cambio %= denominaciones[i];
     }
 
-    for (int i = 0; i < n; i++) {
-        cout << resultado[i] << endl;
-    }
+    return resultado;
 }
 
 int main() {
@@ -118,10 +112,17 @@ int main() {
     } else {
         int cambio = Q - P;
 
-        // Cambio con programación dinámica
-        cambio_dinamico(denominaciones, cambio);
-        // Cambio con algoritmo avaro
-        cambio_avaro(denominaciones, cambio);
+        // Cambio usando programación dinámica
+        vector<int> resultado_dinamico = cambio_dinamico(denominaciones, cambio);
+        for (int i = 0; i < N; i++) {
+            cout << resultado_dinamico[i] << endl;
+        }
+
+        // Cambio usando algoritmo avaro
+        vector<int> resultado_avaro = cambio_avaro(denominaciones, cambio);
+        for (int i = 0; i < N; i++) {
+            cout << resultado_avaro[i] << endl;
+        }
     }
 
     return 0;
